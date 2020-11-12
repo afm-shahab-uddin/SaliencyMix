@@ -96,6 +96,7 @@ CUDA_VISIBLE_DEVICES=0,1 python saliencymix.py \
 
 
 ### ImageNet
+-Please use "SaliencyMix-ImageNet" directory
 
 ### Train Examples
 - ImageNet with 4 NVIDIA GeForce RTX 2080 Ti GPUs 
