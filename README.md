@@ -1,8 +1,13 @@
 # SaliencyMix
 SaliencyMix: A Saliency Guided Data Augmentation Strategy for Better Regularization
 
-This implementation is based on 
-https://github.com/uoguelph-mlrg/Cutout
+
+CIFAR training and testing code is based on 
+- [Cutout](https://github.com/uoguelph-mlrg/Cutout)
+
+The ImageNet is based on
+- [Cutmix-PyTorch](https://github.com/clovaai/CutMix-PyTorch)
+
 
 ### Requirements  
 - Python3
@@ -87,4 +92,47 @@ CUDA_VISIBLE_DEVICES=0,1 python saliencymix.py \
 --batch_size 128 \
 --data_augmentation \
 --learning_rate 0.1
+```
+
+
+### ImageNet
+
+### Train Examples
+- ImageNet with 4 NVIDIA GeForce RTX 2080 Ti GPUs 
+```
+python train.py \
+--net_type resnet \
+--dataset imagenet \
+--batch_size 256 \
+--lr 0.1 \
+--depth 50 \
+--epochs 300 \
+--expname ResNet50 \
+-j 40 \
+--beta 1.0 \
+--cutmix_prob 1.0 \
+--no-verbose
+```
+
+### Test Examples using ImageNet Pretrained models
+
+- Trained models can be downloaded from [here](https://www.dropbox.com/sh/zzo0m9o20bndmaq/AACvk_KyOLJl_T2cCWagivjDa?dl=0)
+
+- ResNet-50
+```
+python test.py \
+--net_type resnet \
+--dataset imagenet \
+--batch_size 64 \
+--depth 50 \
+--pretrained /runs/ResNet50_SaliencyMix_21.26/model_best.pth.tar
+```
+- ResNet-101
+```
+python test.py \
+--net_type resnet \
+--dataset imagenet \
+--batch_size 64 \
+--depth 101 \
+--pretrained /runs/ResNet101_SaliencyMix_20.09/model_best.pth.tar
 ```
