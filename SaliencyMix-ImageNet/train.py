@@ -30,7 +30,7 @@ model_names = sorted(name for name in models.__dict__
                      if name.islower() and not name.startswith("__")
                      and callable(models.__dict__[name]))
 
-parser = argparse.ArgumentParser(description='Cutmix PyTorch CIFAR-10, CIFAR-100 and ImageNet-1k Training')
+parser = argparse.ArgumentParser(description='SaliencyMix PyTorch ImageNet-1k Training')
 parser.add_argument('--net_type', default='resnet', type=str,
                     help='networktype: resnet, and pyamidnet')
 parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
@@ -61,8 +61,8 @@ parser.add_argument('--expname', default='TEST', type=str,
                     help='name of experiment')
 parser.add_argument('--beta', default=0, type=float,
                     help='hyperparameter beta')
-parser.add_argument('--cutmix_prob', default=0, type=float,
-                    help='cutmix probability')
+parser.add_argument('--salmix_prob', default=0, type=float,
+                    help='SaliencyMix probability')
 
 parser.set_defaults(bottleneck=True)
 parser.set_defaults(verbose=True)
@@ -74,41 +74,6 @@ best_err5 = 100
 def main():
     global args, best_err1, best_err5
     args = parser.parse_args()
-
-    # if args.dataset.startswith('cifar'):
-    #     normalize = transforms.Normalize(mean=[x / 255.0 for x in [125.3, 123.0, 113.9]],
-    #                                      std=[x / 255.0 for x in [63.0, 62.1, 66.7]])
-    #
-    #     transform_train = transforms.Compose([
-    #         transforms.RandomCrop(32, padding=4),
-    #         transforms.RandomHorizontalFlip(),
-    #         transforms.ToTensor(),
-    #         normalize,
-    #     ])
-    #
-    #     transform_test = transforms.Compose([
-    #         transforms.ToTensor(),
-    #         normalize
-    #     ])
-    #
-    #     if args.dataset == 'cifar100':
-    #         train_loader = torch.utils.data.DataLoader(
-    #             datasets.CIFAR100('../data', train=True, download=True, transform=transform_train),
-    #             batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
-    #         val_loader = torch.utils.data.DataLoader(
-    #             datasets.CIFAR100('../data', train=False, transform=transform_test),
-    #             batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
-    #         numberofclass = 100
-    #     elif args.dataset == 'cifar10':
-    #         train_loader = torch.utils.data.DataLoader(
-    #             datasets.CIFAR10('../data', train=True, download=True, transform=transform_train),
-    #             batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
-    #         val_loader = torch.utils.data.DataLoader(
-    #             datasets.CIFAR10('../data', train=False, transform=transform_test),
-    #             batch_size=args.batch_size, shuffle=True, num_workers=args.workers, pin_memory=True)
-    #         numberofclass = 10
-    #     else:
-    #         raise Exception('unknown dataset: {}'.format(args.dataset))
 
     if args.dataset == 'imagenet':
         traindir = os.path.join('~/dataset/tiny-imagenet/train')
@@ -151,49 +116,6 @@ def main():
             batch_size=args.batch_size, shuffle=False,
             num_workers=args.workers, pin_memory=True)
         numberofclass = 200
-
-    # elif args.dataset == 'imagenet':
-    #     traindir = os.path.join('/dataset/imagenet/train')
-    #     valdir = os.path.join('/dataset/imagenet/val')
-    #     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
-    #                                      std=[0.229, 0.224, 0.225])
-    #
-    #     jittering = utils.ColorJitter(brightness=0.4, contrast=0.4,
-    #                                   saturation=0.4)
-    #     lighting = utils.Lighting(alphastd=0.1,
-    #                               eigval=[0.2175, 0.0188, 0.0045],
-    #                               eigvec=[[-0.5675, 0.7192, 0.4009],
-    #                                       [-0.5808, -0.0045, -0.8140],
-    #                                       [-0.5836, -0.6948, 0.4203]])
-    #
-    #     train_dataset = datasets.ImageFolder(
-    #         traindir,
-    #         transforms.Compose([
-    #             transforms.RandomResizedCrop(224),
-    #             transforms.RandomHorizontalFlip(),
-    #             transforms.ToTensor(),
-    #             jittering,
-    #             lighting,
-    #             normalize,
-    #         ]))
-    #
-    #     train_sampler = None
-    #
-    #     train_loader = torch.utils.data.DataLoader(
-    #         train_dataset, batch_size=args.batch_size, shuffle=(train_sampler is None),
-    #         num_workers=args.workers, pin_memory=True, sampler=train_sampler)
-    #
-    #     val_loader = torch.utils.data.DataLoader(
-    #         datasets.ImageFolder(valdir, transforms.Compose([
-    #             transforms.Resize(256),
-    #             transforms.CenterCrop(224),
-    #             transforms.ToTensor(),
-    #             normalize,
-    #         ])),
-    #         batch_size=args.batch_size, shuffle=False,
-    #         num_workers=args.workers, pin_memory=True)
-    #     numberofclass = 1000
-
     else:
         raise Exception('unknown dataset: {}'.format(args.dataset))
 
@@ -276,7 +198,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
         target = target.cuda()
 
         r = np.random.rand(1)
-        if args.beta > 0 and r < args.cutmix_prob:
+        if args.beta > 0 and r < args.salmix_prob:
             # generate mixed sample
             lam = np.random.beta(args.beta, args.beta)
             rand_index = torch.randperm(input.size()[0]).cuda()
