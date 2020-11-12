@@ -111,7 +111,7 @@ python train.py \
 --expname ResNet50 \
 -j 40 \
 --beta 1.0 \
---cutmix_prob 1.0 \
+--salmix_prob 1.0 \
 --no-verbose
 ```
 
