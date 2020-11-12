@@ -18,9 +18,6 @@ from model.resnet import ResNet18, ResNet50, ResNet101
 from model.wide_resnet import WideResNet
 
 import os
-# import matplotlib.pyplot as plt
-import scipy.misc
-import time
 import cv2
 
 model_options = ['resnet18', 'resnet50', 'resnet101', 'wideresnet']
