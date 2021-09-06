@@ -117,7 +117,7 @@ python train.py \
 
 ### Test Examples using ImageNet Pretrained models
 
-- Trained models can be downloaded from [here](https://www.dropbox.com/sh/zzo0m9o20bndmaq/AACvk_KyOLJl_T2cCWagivjDa?dl=0)
+- Trained models can be downloaded from [here](https://drive.google.com/drive/folders/1vnJHtgzcBInuPZVkwQxQ5A5SE_i_-EON?usp=sharing)
 
 - ResNet-50
 ```
