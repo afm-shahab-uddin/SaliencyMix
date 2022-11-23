@@ -286,5 +286,5 @@ torch.save(cnn.state_dict(), 'checkpoints/' + test_id + '.pt')
 csv_logger.close()
 
 f = open("best_accuracy.txt", "a+")
-f .write('best acc: %.3f at iteration: %d, and Training time %d \r\n' % (best_accuracy, best_acc_epoch))
+f .write('best acc: %.3f at iteration: %d \r\n' % (best_accuracy, best_acc_epoch))
 f.close()
